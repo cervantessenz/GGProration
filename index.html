@@ -121,9 +121,9 @@ day: "numeric"
 let total = proratedRent + proratedPet;
 
 document.getElementById("result").innerHTML =
-"<span class='next-date'>Last Payment Due Date: " + formattedNextPayment + "</span><br>" +
+"<span class='next-date'>Next Payment Due Date: " + formattedNextPayment + "</span><br>" +
 "Prorated Rent: $" + proratedRent.toFixed(2) +
-"<br>Prorated Pet: $" + proratedPet.toFixed(2) +
+"<br>Prorated Pet: Rent $" + proratedPet.toFixed(2) +
 "<br>Total Due: $" + total.toFixed(2);
 }
 </script>
@@ -178,7 +178,7 @@ day: "numeric"
 document.getElementById("resultOut").innerHTML =
 "<span class='next-date'>Move-out Payment Due Date: " + formattedMoveOut + "</span><br>" +
 "Prorated Rent: $" + proratedRent.toFixed(2) +
-"<br>Prorated Pet: $" + proratedPet.toFixed(2) +
+"<br>Prorated Pet Rent: $" + proratedPet.toFixed(2) +
 "<br>Total Due: $" + total.toFixed(2);
 
 }
@@ -187,3 +187,4 @@ document.getElementById("resultOut").innerHTML =
 
 </body>
 </html>
+
