@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Move-in Proration Calculator</title>
+<style>
+body {
+    font-family: Arial;
+    background: #f4f6f8;
+    padding: 40px;
+}
+.container {
+    background: white;
+    padding: 20px;
+    max-width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+input, button {
+    width: 90%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.result {
+    margin-top: 15px;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Move-in proration calculator</h2>
+
+<label>Move-in Date:</label> <input type="date" id="moveIn">
+
+<label>Rent Amount:</label> <input type="number" id="rent">
+
+<label>Pet Rent:</label> <input type="number" id="pet">
+
+<button onclick="calculate()">Calculate</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+function calculate(){
+
+let input = document.getElementById("moveIn").value;
+let parts = input.split("-");
+let date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+let rent = parseFloat(document.getElementById("rent").value) || 0;
+let pet = parseFloat(document.getElementById("pet").value) || 0;
+
+let year = date.getFullYear();
+let month = date.getMonth();
+
+let lastDay = new Date(year, month + 1, 0).getDate();
+
+let day = date.getDate();
+
+// These variables will hold the final prorated amounts
+let proratedRent;
+let proratedPet;
+
+// ✅ SPECIAL RULE: If move-in day is the 1st
+if(day === 1){
+
+    // Charge full rent (no proration)
+    proratedRent = rent;
+
+    // Charge full pet rent
+    proratedPet = pet;
+
+} else {
+
+    // Normal proration for all other days
+
+    let daysRemaining = lastDay - day + 1;
+
+    let dailyRent = rent / 30;
+    let dailyPet = pet / 30;
+
+    proratedRent = dailyRent * daysRemaining;
+    proratedPet = dailyPet * daysRemaining;
+    }
+
+// Convert text to numbers
+
+let nextYear = parseInt(parts[0]);
+let nextMonth = parseInt(parts[1]);
+
+// Move to next month
+nextMonth += 1;
+
+// Handle December → January year change
+if(nextMonth > 12){
+nextMonth = 1;
+nextYear += 1;
+}
+
+// Create date safely using local constructor
+let nextPaymentDate = new Date(nextYear, nextMonth - 1, 1);
+
+// Format it nicely
+let formattedNextPayment =
+nextPaymentDate.toLocaleDateString("en-US", {
+year: "numeric",
+month: "short",
+day: "numeric"
+});
+
+
+let total = proratedRent + proratedPet;
+
+document.getElementById("result").innerHTML =
+"<span class='next-date'>Last Payment Due Date: " + formattedNextPayment + "</span><br>" +
+"Prorated Rent: $" + proratedRent.toFixed(2) +
+"<br>Prorated Pet: $" + proratedPet.toFixed(2) +
+"<br>Total Due: $" + total.toFixed(2);
+}
+</script>
+
+<div class="container" style="margin-top:75px;">
+
+<h2>Move-out proration calculator</h2>
+
+<label>Move-out Date:</label>
+<input type="date" id="moveOut">
+
+<label>Rent Amount:</label>
+<input type="number" id="rentOut">
+
+<label>Pet Rent:</label>
+<input type="number" id="petOut">
+
+<button onclick="calculateMoveOut()">Calculate</button>
+
+<div class="result" id="resultOut"></div>
+
+</div>
+
+<script>
+
+function calculateMoveOut(){
+
+let input = document.getElementById("moveOut").value;
+let parts = input.split("-");
+let date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+let rent = parseFloat(document.getElementById("rentOut").value) || 0;
+let pet = parseFloat(document.getElementById("petOut").value) || 0;
+
+let daysOccupied = date.getDate();
+
+let dailyRent = rent / 30;
+let dailyPet = pet / 30;
+
+let proratedRent = Math.min(dailyRent * daysOccupied, rent);
+let proratedPet = Math.min(dailyPet * daysOccupied, pet);
+
+let total = proratedRent + proratedPet;
+
+let formattedMoveOut =
+date.toLocaleDateString("en-US", {
+year: "numeric",
+month: "short",
+day: "numeric"
+});
+
+document.getElementById("resultOut").innerHTML =
+"<span class='next-date'>Move-out Payment Due Date: " + formattedMoveOut + "</span><br>" +
+"Prorated Rent: $" + proratedRent.toFixed(2) +
+"<br>Prorated Pet: $" + proratedPet.toFixed(2) +
+"<br>Total Due: $" + total.toFixed(2);
+
+}
+
+</script>
+
+</body>
+</html>
